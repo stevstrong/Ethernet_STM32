@@ -8,7 +8,7 @@ This library runs **only on the STM32F1 and F4** family micro-controllers!
 
 The library supports **only W5500** Ethernet controllers, and uses 8 sockets.
 
-A possible W550-based module:
+A possible W5500-based module:
 https://www.aliexpress.com/item/Free-shipping-W5500-Ethernet-network-module-hardware-TCP-IP-51-STM32-microcontroller-program-over-W5100/32505484781.html?spm=a2g0s.9042311.0.0.pWrBlQ
 
 https://ae01.alicdn.com/kf/HTB1_UFSKXXXXXXIXFXXq6xXFXXXd/W5500-Ethernet-network-module-hardware-TCP-IP-51-STM32-microcontroller-program-over-W5100.jpg
