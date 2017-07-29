@@ -236,7 +236,7 @@ uint16_t SOCKETClass::recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *ad
       w5500.read_data(s, ptr, head, 0x08);
       ptr += 8;
       // read peer's IP address, port number.
-      *(uint32_t*)addr = *(uint32_t*)head;
+      memcpy(addr,head,4);
       *port = word(head[4], head[5]);
       data_len = word(head[6], head[7]);
 
@@ -250,11 +250,7 @@ uint16_t SOCKETClass::recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *ad
       w5500.read_data(s, ptr, head, 0x06);
       ptr += 6;
 
-      *(uint32_t*)addr = *(uint32_t*)head;
-      //addr[0] = head[0];
-      //addr[1] = head[1];
-      //addr[2] = head[2];
-      //addr[3] = head[3];
+      memcpy(addr,head,4);
       data_len = word(head[4], head[5]);
 
       w5500.read_data(s, ptr, buf, data_len); // data copy.

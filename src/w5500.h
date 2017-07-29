@@ -12,6 +12,7 @@
 
 #include <SPI.h>
 #include "util.h"
+#include "variant.h"
 
 /** Total RAM buffer is 16 kBytes for Transmitter and 16 kBytes for receiver for 1 Socket.
  *  The Total W5500 RAM buffer is 32 kBytes (16 + 16).
@@ -111,7 +112,6 @@ class W5500Class
 public:
 
   void init(SPIClass & _spi, uint8_t _ss_pin);
-  inline void init(void) { init(SPI, PA4); }
   inline uint8_t readVersion(void) { return readVERSIONR(); };
 
   /**
