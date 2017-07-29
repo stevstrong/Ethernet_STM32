@@ -1,4 +1,4 @@
-W5500 Ethernet library for STM32F1 and STMF4 micro-controllers
+W5500 Ethernet library for STM32F1 and STM32F4 micro-controllers
 ----
 
 That library has been ported from the official Arduino Ethernet library.
