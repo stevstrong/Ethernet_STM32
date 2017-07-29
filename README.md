@@ -2,13 +2,14 @@ W5500 Ethernet library for STM32F1 and STMF4 micro-controllers
 ----
 
 That library has been ported from the official Arduino Ethernet library.
-As reference was also used: 
+
+As additional reference served the lib from Vassilis Serasidis: https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/master/STM32F1/libraries/Ethernet_STM
 
 This library runs **only on the STM32F1 and F4** family micro-controllers!
 
 The library supports **only W5500** Ethernet controllers, and uses 8 sockets.
 
-A possible W5500-based module:
+This library was tested on a W5500-based module like:
 https://www.aliexpress.com/item/Free-shipping-W5500-Ethernet-network-module-hardware-TCP-IP-51-STM32-microcontroller-program-over-W5100/32505484781.html?spm=a2g0s.9042311.0.0.pWrBlQ
 
 https://ae01.alicdn.com/kf/HTB1_UFSKXXXXXXIXFXXq6xXFXXXd/W5500-Ethernet-network-module-hardware-TCP-IP-51-STM32-microcontroller-program-over-W5100.jpg
@@ -43,7 +44,7 @@ This will start the SPI transaction at maximum supported speed (36MHz on SPI1 fo
 
 4. The rest of functions / commands have the same syntax with the stock Arduino Ethernet library.
 
-5. A typical application looks like following example:
+5. Here a typical example:
 ```
 #include <Ethernet_STM32.h>
 ...
@@ -57,7 +58,7 @@ void setup()
   delay(1000);
 
   // init interface and hardware using SPI class object and chip select pin on your choice
-  Ethernet.init(SPI, PA4);
+  Ethernet.init(mSpi, PA4); // alternatively it is possible use the default SPI object
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
