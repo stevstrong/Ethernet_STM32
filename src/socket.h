@@ -16,8 +16,6 @@ private:
 	static W5500Class w5500;
 public:
 	void init(SPIClass & spi, uint8_t sspin) { w5500.init(spi, sspin); }
-	void init(uint8_t sspin) { init(SPI, sspin); }
-	void init() { init(SPI, PA4); }
 	inline uint8_t readChipVersion(void) { return w5500.readVersion(); }
 	inline uint8_t status(SOCKET s) { return w5500.readSnSR(s); }
 	inline int16_t recvAvailable(SOCKET s) { return w5500.getRXReceivedSize(s); }

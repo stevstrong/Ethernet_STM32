@@ -16,7 +16,6 @@ DhcpClass _dhcp;
 int EthernetClass::begin(uint8_t *mac_address, unsigned long timeout, unsigned long responseTimeout)
 {
   // Initialise the basic info
-  socket.init();
   socket.setMACAddress(mac_address);
   socket.setIPAddress(IPAddress(0,0,0,0).raw_address());
 
@@ -61,7 +60,6 @@ void EthernetClass::begin(uint8_t *mac_address, IPAddress local_ip, IPAddress dn
 
 void EthernetClass::begin(uint8_t *mac, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
 {
-  socket.init();
   socket.setMACAddress(mac);
   socket.setIPAddress(local_ip.raw_address());
   socket.setGatewayIp(gateway.raw_address());
