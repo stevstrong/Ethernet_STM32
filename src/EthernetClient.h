@@ -31,6 +31,7 @@ public:
     { return _sock == rhs._sock && _sock != MAX_SOCK_NUM && rhs._sock != MAX_SOCK_NUM; }
   virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); }
   inline uint8_t getSocketNumber() { return _sock; }
+  inline void getRemoteIP(uint8_t * remoteIP) { socket.getRemoteIP(_sock, remoteIP); }
 
   friend class EthernetServer;
   

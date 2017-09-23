@@ -16,6 +16,7 @@ private:
 	static W5500Class w5500;
 public:
 	void init(SPIClass & spi, uint8_t sspin) { w5500.init(spi, sspin); }
+	void init(uint8_t sspin) { init(SPI, sspin); }
 	void init() { init(SPI, PA4); }
 	inline uint8_t readChipVersion(void) { return w5500.readVersion(); }
 	inline uint8_t status(SOCKET s) { return w5500.readSnSR(s); }
@@ -27,6 +28,7 @@ public:
 	inline void getGatewayIp(uint8_t * ip) { w5500.getGatewayIp(ip); }
 	inline void setSubnetMask(uint8_t * sm) { w5500.setSubnetMask(sm); }
 	inline void getSubnetMask(uint8_t * sm) { w5500.getSubnetMask(sm); }
+	inline void getRemoteIP(SOCKET s, uint8_t * ip) { w5500.readSnDIPR(s, ip); }
 	uint8_t open(SOCKET s, uint8_t protocol, uint16_t port, uint8_t flag); // Opens a socket(TCP or UDP or IP_RAW mode)
 	void close(SOCKET s); // Close socket
 	uint8_t connect(SOCKET s, uint8_t * addr, uint16_t port); // Establish TCP connection (Active connection)
