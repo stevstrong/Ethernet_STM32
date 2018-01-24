@@ -26,18 +26,22 @@ IPAddress myDns(192, 168, 0, 1);
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
 
-uint32_t beginMicros, endMicros;
+SPIClass mSPI(1); // use 2 or 3 for black F4, because the board LED is on PA6
+
+uint32_t beginMicros, endMicros, t;
 int32_t byteCount;
 
+//-----------------------------------------------------------------------------
 void setup()
 {
+  pinMode(LED_BUILTIN, OUTPUT);
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
   while (!Serial) ; // wait for serial port to connect. Needed for native USB port only
   delay(1000);
 
   // initialise interface and hardware
-  Ethernet.init(SPI, PA4); // SPI object, chip select pin
+  Ethernet.init(mSPI, PA4); // SPI object, chip select pin
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
@@ -52,15 +56,31 @@ void setup()
   }
   byteCount = -1;
 }
-
+uint8_t blink_count;
+//-----------------------------------------------------------------------------
+void Blink()
+{
+	if ( (millis()-t)>500 )
+	{
+		t = millis();
+		digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+		Serial.write('.');
+		if ( (blink_count++)>80 )
+		{
+			blink_count = 0;
+			Serial.write('\n');
+		}
+	}
+}
+//-----------------------------------------------------------------------------
 void connect_to_server()
 {
 	if ( byteCount!=-1 ) return; // only send request after finished the reception
   Serial.print("********************************************************\n");
   Serial.print("press any key to send request to the server\n");
-	while ( !Serial.available() ) ; // wait for any input from serial
+	while ( !Serial.available() ) Blink(); // wait for any input from serial
 	while ( Serial.available() ) Serial.read(); // read all Rx bytes
-  Serial.print("connecting to ");
+  Serial.print("\nconnecting to ");
   Serial.print(server);
   Serial.println("...");
 
@@ -80,10 +100,10 @@ void connect_to_server()
     Serial.println("connection failed");
   }
 }
-
+//-----------------------------------------------------------------------------
 #define BUFF_SIZE 1024
 static byte buffer[BUFF_SIZE];
-
+//-----------------------------------------------------------------------------
 void check_client()
 {
   if (byteCount<0) return;
@@ -115,7 +135,7 @@ void check_client()
     byteCount = -1;
   }
 }
-
+//-----------------------------------------------------------------------------
 void loop()
 {
   connect_to_server(); // send request
