@@ -26,9 +26,12 @@ and rename the folder **Ethernet_STM32-master** to **Ethernet_STM32**
 
 Using the Ethernet_STM32 library
 ----
-1. Include this library in your sketch  
+1. Including this library in your sketch  
 
-`#include <Ethernet_STM32.h>`
+```
+#include <Ethernet_STM32.h>
+#include <SPI.h>
+```
 
 2. The library needs to know the SPI port on which you connected the W5500 chip, and the corresponding chip select pin.
 Therefore you have to declare an SPI class object with appropriate SPI port number (1..2 for F1, 1..3 for F4)
@@ -40,13 +43,14 @@ Therefore you have to declare an SPI class object with appropriate SPI port numb
 
 `  Ethernet.init(mSpi, PA4); // SPI class object, chip select pin on your choice`
 
-This will start the SPI transaction at maximum supported speed (36MHz on SPI1 for F3, 42MHz for F4).
+This will start the SPI transaction at maximum supported speed (36MHz on SPI1 for F1, 42MHz for F4).
 
 4. The rest of functions / commands have the same syntax with the stock Arduino Ethernet library.
 
 5. Here a typical example:
 ```
 #include <Ethernet_STM32.h>
+#include <SPI.h>
 ...
 SPIClass mSpi(1); // you can use 1..2 for STM32F1, 1..3 for STM32F4)
 ...
