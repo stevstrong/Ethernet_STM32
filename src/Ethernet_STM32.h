@@ -18,8 +18,8 @@ private:
 public:
   static uint8_t _state[MAX_SOCK_NUM];
   static uint16_t server_port[MAX_SOCK_NUM];
-  void init(SPIClass & spi, uint8_t cs_pin) { socket.init(spi, cs_pin); }
-  void init(uint8_t cs_pin) { init(SPI, cs_pin); }
+  void init(SPIClass & spi, const uint8_t cs_pin) { socket.init(spi, cs_pin); }
+  void init(const uint8_t cs_pin) { init(SPI, cs_pin); }
   // Initialize the Ethernet shield to use the provided MAC address and gain the rest of the
   // configuration through DHCP.
   // Returns 0 if the DHCP configuration failed, and 1 if it succeeded
