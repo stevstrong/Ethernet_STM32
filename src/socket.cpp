@@ -85,7 +85,7 @@ uint8_t SOCKETClass::connect(SOCKET s, uint8_t * addr, uint16_t port)
 void SOCKETClass::set(SOCKET s, uint8_t * mac, uint8_t * addr, uint16_t port)
 {
   w5500.writeSnDHAR(s, mac);
-  w5500.writeSnDIPR(s, addr);   //239.255.0.1
+  w5500.writeSnDIPR(s, addr);
   w5500.writeSnDPORT(s, port);
 }
 

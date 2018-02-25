@@ -236,8 +236,8 @@ uint8_t EthernetUDP::beginMulticast(IPAddress ip, uint16_t port)
   mac[4] = ip[2];
   mac[5] = ip[3];
 
-  socket.set(_sock, mac, rawIPAddress(ip), port);   //239.255.0.1
-  //W5100.writeSnDIPR(_sock, rawIPAddress(ip));   //239.255.0.1
+  socket.set(_sock, mac, rawIPAddress(ip), port);
+  //W5100.writeSnDIPR(_sock, rawIPAddress(ip));
   //W5100.writeSnDPORT(_sock, port);
   //W5100.writeSnDHAR(_sock,mac);
 
