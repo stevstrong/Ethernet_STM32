@@ -295,7 +295,7 @@ public:
 private:
   SPIClass & mSPI = SPI;
   uint8_t SS;
-  volatile uint32_t * ssPortReg;
+  volatile uint32 * ssPortReg;
   uint16_t ssBitMask;
   inline void initSS(uint8_t ss_pin) {
     SS = ss_pin;
