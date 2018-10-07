@@ -5,7 +5,13 @@ That library has been ported from the official Arduino Ethernet library.
 
 As additional reference served the lib from Vassilis Serasidis: https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/master/STM32F1/libraries/Ethernet_STM
 
-This library runs **only on the STM32F1 and F4** family micro-controllers!
+This library runs **only on the STM32F1 and F4** family micro-controllers, in conjunction with these cores:
+
+- https://github.com/rogerclarkmelbourne/Arduino_STM32
+or
+
+- https://github.com/stevstrong/Arduino_STM32
+
 
 The library supports **only W5500** Ethernet controllers, and uses 8 sockets.
 
