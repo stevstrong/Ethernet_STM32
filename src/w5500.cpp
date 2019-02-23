@@ -23,7 +23,7 @@ void W5500Class::init(SPIClass & _spi, uint8_t _ss_pin)
 
 uint16_t W5500Class::getTXFreeSize(SOCKET s)
 {
-    uint16_t val=0, val1=0;
+    uint16_t val=0, val1;
     do {
         val1 = readSnTX_FSR(s);
         if (val1 != 0)
@@ -35,7 +35,7 @@ uint16_t W5500Class::getTXFreeSize(SOCKET s)
 
 uint16_t W5500Class::getRXReceivedSize(SOCKET s)
 {
-    uint16_t val=0,val1=0;
+    uint16_t val=0,val1;
     do {
         val1 = readSnRX_RSR(s);
         if (val1 != 0)

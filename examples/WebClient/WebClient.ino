@@ -26,10 +26,13 @@ IPAddress myDns(192, 168, 0, 1);
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
 
-SPIClass mSPI(1); // use 2 or 3 for black F4, because the board LED is on PA6
-
 uint32_t beginMicros, endMicros, t;
 int32_t byteCount;
+
+//-----------------------------------------------------------------------------
+// SPI instance: use 2 or 3 for black F4, because the on-board LED conflicts with SPI1_MISO(PA6)
+SPIClass mSPI(1);
+#define W5500_CS PA4 // use PA4 for SPI1, PB12 for SPI2
 
 //-----------------------------------------------------------------------------
 void setup()
@@ -41,7 +44,7 @@ void setup()
   delay(1000);
 
   // initialise interface and hardware
-  Ethernet.init(mSPI, PA4); // SPI object, chip select pin
+  Ethernet.init(mSPI, W5500_CS); // SPI object, chip select pin
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
@@ -82,11 +85,11 @@ void connect_to_server()
 	while ( Serial.available() ) Serial.read(); // read all Rx bytes
   Serial.print("\nconnecting to ");
   Serial.print(server);
-  Serial.println("...");
+  Serial.print("...");
 
   // if you get a connection, report back via serial:
   if (client.connect(server, 80)) {
-    Serial.println("connected. Sending request...");
+    Serial.print("connected. Sending request...");
     // Make a HTTP request:
     //client.println("GET /search?q=arduino HTTP/1.1"); // for Google
     client.println("GET / HTTP/1.1");
@@ -95,6 +98,7 @@ void connect_to_server()
     client.println();
     beginMicros = micros();
     byteCount = 0;
+    Serial.println("done.");
   } else {
     // if you didn't get a connection to the server:
     Serial.println("connection failed");

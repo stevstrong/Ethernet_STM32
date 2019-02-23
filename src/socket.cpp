@@ -9,6 +9,7 @@
 #include "IPAddress.h"
 
 static uint16_t local_port;
+static uint8_t sock_is_sending = 0;
 W5500Class SOCKETClass::w5500;
 
 /**
@@ -17,6 +18,8 @@ W5500Class SOCKETClass::w5500;
  */
 uint8_t SOCKETClass::open(SOCKET s, uint8_t protocol, uint16_t port, uint8_t flag)
 {
+  sock_is_sending &= ~(1<<s);
+
   if ((protocol == SnMR::TCP) || (protocol == SnMR::UDP) || (protocol == SnMR::IPRAW) || (protocol == SnMR::MACRAW) || (protocol == SnMR::PPPOE))
   {
     close(s);
@@ -43,6 +46,7 @@ uint8_t SOCKETClass::open(SOCKET s, uint8_t protocol, uint16_t port, uint8_t fla
  */
 void SOCKETClass::close(SOCKET s)
 {
+  sock_is_sending &= ~(1<<s);
   w5500.execCmdSn(s, Sock_CLOSE);
   w5500.writeSnIR(s, 0xFF);
 }
@@ -96,44 +100,49 @@ void SOCKETClass::set(SOCKET s, uint8_t * mac, uint8_t * addr, uint16_t port)
  */
 uint16_t SOCKETClass::send(SOCKET s, const uint8_t * buf, uint16_t len)
 {
-  uint8_t status=0;
-  uint16_t ret=0;
-  uint16_t freesize=0;
-
-  if (len > w5500.SSIZE) 
-    ret = w5500.SSIZE; // check size not to exceed MAX size.
-  else 
-    ret = len;
-
-  // if freebuf is available, start.
-  do 
+  uint16_t ret = 0;
+  while ( ret<len )
   {
-    freesize = w5500.getTXFreeSize(s);
-    status = w5500.readSnSR(s);
-    if ((status != SnSR::ESTABLISHED) && (status != SnSR::CLOSE_WAIT))
+    if( sock_is_sending & (1<<s) )
     {
-      ret = 0; 
-      break;
+      sock_is_sending &= ~(1 << s);
+      while ( !(w5500.readSnIR(s) & SnIR::SEND_OK) )
+      {
+        uint8_t snSR = w5500.readSnSR(s);
+        if((snSR != SnSR::ESTABLISHED) && (snSR != SnSR::CLOSE_WAIT))
+        {
+    	  close(s); return 0;
+    	}
+        if (w5500.readSnIR(s) & SnIR::TIMEOUT)
+        {
+          w5500.writeSnIR(s, (SnIR::SEND_OK | SnIR::TIMEOUT)); /* clear SEND_OK & TIMEOUT */
+          close(s); return 0;
+        }
+      }
+      /* +2008.01 bj */
+      w5500.writeSnIR(s, SnIR::SEND_OK);
     }
-  } 
-  while (freesize < ret);
 
-  // copy data
-  w5500.send_data_processing(s, (uint8_t *)buf, ret);
-  w5500.execCmdSn(s, Sock_SEND);
+    uint16_t trx = len - ret;
+    if (trx > w5500.SSIZE) trx = w5500.SSIZE; // check size not to exceed MAX size.
 
-  /* +2008.01 bj */
-  while ( (w5500.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK ) 
-  {
-    /* m2008.01 [bj] : reduce code */
-    if ( w5500.readSnSR(s) == SnSR::CLOSED )
+    // if freebuf is available, start.
+    while ( w5500.getTXFreeSize(s) < trx )
     {
-      close(s);
-      return 0;
+      uint8_t status = w5500.readSnSR(s);
+      if ((status != SnSR::ESTABLISHED) && (status != SnSR::CLOSE_WAIT))
+      {
+        close(s); return 0;
+      }
     }
+
+    // copy data
+    w5500.send_data_processing(s, (uint8_t *)buf+ret, trx);
+    w5500.execCmdSn(s, Sock_SEND);
+    sock_is_sending |= (1 << s);
+
+	ret += trx;
   }
-  /* +2008.01 bj */
-  w5500.writeSnIR(s, SnIR::SEND_OK);
   return ret;
 }
 
@@ -194,25 +203,7 @@ uint16_t SOCKETClass::sendto(SOCKET s, const uint8_t *buf, uint16_t len, uint8_t
   w5500.writeSnDIPR(s, addr);
   w5500.writeSnDPORT(s, port);
 
-  // copy data
-  w5500.send_data_processing(s, (uint8_t *)buf, len);
-  w5500.execCmdSn(s, Sock_SEND);
-
-  /* +2008.01 bj */
-  while ( !(w5500.readSnIR(s) & SnIR::SEND_OK) ) 
-  {
-    if (w5500.readSnIR(s) & SnIR::TIMEOUT)
-    {
-      /* +2008.01 [bj]: clear interrupt */
-      w5500.writeSnIR(s, (SnIR::SEND_OK | SnIR::TIMEOUT)); /* clear SEND_OK & TIMEOUT */
-      return 0;
-    }
-  }
-
-  /* +2008.01 bj */
-  w5500.writeSnIR(s, SnIR::SEND_OK);
-
-  return len;
+  return send(s, buf, len);
 }
 
 
