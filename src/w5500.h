@@ -300,7 +300,7 @@ private:
   inline void initSS(uint8_t ss_pin) {
     SS = ss_pin;
     pinMode(SS, OUTPUT);
-    ssPortReg = (volatile uint32_t *)portSetRegister(SS);
+    ssPortReg = (volatile uint32 *)portSetRegister(SS);
     ssBitMask = digitalPinToBitMask(SS);
     deselect_SS();
   };
