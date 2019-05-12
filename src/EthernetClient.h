@@ -18,6 +18,8 @@ public:
   virtual int connect(IPAddress ip, uint16_t port);
   virtual int connect(const char *host, uint16_t port);
   size_t write(const uint8_t *buf, size_t size);
+  size_t inline write(const char *buf, size_t size) { return write((const uint8_t *)buf, size); }
+  size_t inline write(const char *buf) { return write((const uint8_t *)buf, strlen(buf)); }
   size_t write(uint8_t b) { return write(&b, 1); }
   virtual int available();
   virtual int read();
