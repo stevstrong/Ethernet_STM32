@@ -273,6 +273,7 @@ uint16_t SOCKETClass::recvfrom(SOCKET s, uint8_t *buf, uint16_t len, uint8_t *ad
  */
 void SOCKETClass::flush(SOCKET s) {
   // TODO
+  (void)s; // unsused
 }
 
 uint16_t SOCKETClass::igmpsend(SOCKET s, const uint8_t * buf, uint16_t len)
